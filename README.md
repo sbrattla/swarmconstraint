@@ -18,7 +18,7 @@ Let's assume a 3 node Docker Swarm covering 3 DCs. We would like a certain servi
 
     secondary!=true
 
-This will ensure that the service only gets scheduled on nodes without the **secondary** label set to **true**.
+This will ensure that the service only gets scheduled on nodes where the **secondary** label is not set to **true**.
 
 ### Nodes Overview
 
