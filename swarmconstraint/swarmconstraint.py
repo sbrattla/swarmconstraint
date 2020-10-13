@@ -93,11 +93,10 @@ class SwarmConstraint:
     update = False
 
     for label in labels:
-      label = self.splitLabel(label)
-      if (label['key'] not in spec['Labels']):
+      if (label not in spec['Labels']):
         continue
 
-      nodeLabelKey = label['key']
+      nodeLabelKey = label
       nodeLabelVal = spec['Labels'][nodeLabelKey]
       spec['Labels'].update(self.prefixNodeLabel(nodeLabelKey, nodeLabelVal, prefix))
       spec['Labels'].pop(nodeLabelKey, None)
@@ -122,11 +121,11 @@ class SwarmConstraint:
     update = False
 
     for label in labels:
-      label = self.splitAndPrefixLabel(label, prefix)
-      if (label['key'] not in spec['Labels']):
+      label = self.prefixLabel(label, prefix)
+      if (label not in spec['Labels']):
         continue
 
-      nodeLabelKey = label['key']
+      nodeLabelKey = label
       nodeLabelVal = spec['Labels'][nodeLabelKey]
       spec['Labels'].update(self.unPrefixNodeLabel(nodeLabelKey, nodeLabelVal, prefix))
       spec['Labels'].pop(nodeLabelKey, None)
@@ -140,15 +139,9 @@ class SwarmConstraint:
     else:
       return False
 
-  def splitLabel(self, label):
-    # Split a label into a dictionary holding the key and value separately.
-    items = re.split('\=', label)
-    return {'key':items[0], 'val':items[1] if len(items) == 2 else None}
-
-  def splitAndPrefixLabel(self, label, prefix):
+  def prefixLabel(self, label, prefix):
     # Split and prefix a label into a dictionary holding the prefixed key and the value separately.
-    items = re.split('\=', label)
-    return {'key': '{prefix}.{key}'.format(prefix=prefix, key=items[0]), 'val':items[1] if len(items) == 2 else None}
+    return '{prefix}.{key}'.format(prefix=prefix, key=label)
 
   def isNodeLabelPrefixed(self, key, prefix):
     # Evaluates if a node label is prefixed
