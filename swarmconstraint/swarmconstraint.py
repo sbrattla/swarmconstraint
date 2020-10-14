@@ -22,8 +22,6 @@ class SwarmConstraint:
     self.logger.addHandler(handler)
     self.logger.setLevel(logging.DEBUG)
 
-  def run(self):
-
     if (not self.args['watch']):
       raise Exception('At least one node to watch must be provided.')
 
@@ -39,6 +37,8 @@ class SwarmConstraint:
     self.logger.info('Watch {watch}.'.format(watch=','.join(self.args['watch'])))
     self.logger.info('Toggle the label(s) {labels} on {toggle}.'.format(labels=','.join(self.args['label']), toggle=','.join(self.args['toggle'])))
     self.logger.info('Prefix disabled labels with {prefix}.'.format(prefix=self.args['prefix']))
+
+  def run(self):
 
     # Collect availability for watched nodes, and keep track of the collective
     # availability for all the watched nodes.
