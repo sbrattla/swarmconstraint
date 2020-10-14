@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
-import time
 import argparse
 import docker
+import json
+import logging
 import re
 import string
-import logging
+import time
 
 class SwarmConstraint:
 
@@ -158,12 +159,24 @@ class SwarmConstraint:
     label = {'{key}'.format(prefix=prefix,key=key) : '{val}'.format(val=val)}
     return label
 
+class FromFileAction(argparse.Action):
+
+  def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    if nargs is not None:
+      raise ValueError("nargs not allowed")
+    super(FromFileAction, self).__init__(option_strings, dest, **kwargs)
+
+  def __call__(self, parser, namespace, values, option_string=None):
+    print('%r %r %r' % (namespace, values, option_string))
+    setattr(namespace, self.dest, values)
+
 def main():
   parser = argparse.ArgumentParser(description='Toggles one or more constraints depending on node availability')
   parser.add_argument('--watch', metavar='watch', action='append', default=[], help='A node which availability is to be watched.')
   parser.add_argument('--toggle', metavar='toggle', action='append', default=[], help='A node for which constraints are to be toggled. Defaults to all nodes.')
   parser.add_argument('--label', metavar='label', action='append', help='A label which is to be toggled according to availability for watched nodes.')
   parser.add_argument('--prefix', metavar='prefix', default='disabled',  help='The prefix to use for disabled labels. Defaults to "disabled".')
+  parser.add_argument('--from-file', metavar='fromFile', action=FromFileAction, help='A file which holds configurations.')
   args = vars(parser.parse_args())
   se = SwarmConstraint(args)
 
@@ -176,3 +189,4 @@ def main():
 
 if __name__ == '__main__':
   main()
+
