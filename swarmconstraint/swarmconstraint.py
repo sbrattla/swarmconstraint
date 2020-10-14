@@ -20,7 +20,7 @@ class SwarmConstraint:
         '%(asctime)-25s  %(levelname)-8s  %(message)s')
     handler.setFormatter(formatter)
     self.logger.addHandler(handler)
-    self.logger.setLevel(logging.DEBUG)
+    self.logger.setLevel(logging.INFO)
 
     if (not self.args['watch']):
       raise Exception('At least one node to watch must be provided.')
@@ -37,6 +37,13 @@ class SwarmConstraint:
     self.logger.info('Watch {watch}.'.format(watch=','.join(self.args['watch'])))
     self.logger.info('Toggle the label(s) {labels} on {toggle}.'.format(labels=','.join(self.args['label']), toggle=','.join(self.args['toggle'])))
     self.logger.info('Prefix disabled labels with {prefix}.'.format(prefix=self.args['prefix']))
+
+    if (self.args['verbose'] == 0):
+      self.logger.setLevel(logging.WARN)
+    elif (self.args['verbose'] == 1):
+      self.logger.setLevel(logging.INFO)
+    else:
+      self.logger.setLevel(logging.DEBUG)
 
   def run(self):
 
@@ -207,6 +214,7 @@ def main():
   parser.add_argument('--toggle', metavar='toggle', action='append', default=[], help='A node for which constraints are to be toggled. Defaults to all nodes.')
   parser.add_argument('--label', metavar='label', action='append', default=[], help='A label which is to be toggled according to availability for watched nodes.')
   parser.add_argument('--prefix', metavar='prefix', default='disabled',  help='The prefix to use for disabled labels. Defaults to "disabled".')
+  parser.add_argument('--verbose', '-v', action='count', default=0, help='Turn on verbose logging.')
   parser.add_argument('fromFile', action=FromFileAction, help='A file which holds configurations.')
 
   args = vars(parser.parse_args())
